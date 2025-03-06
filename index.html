@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oracle: 2 Inputs, 1 Output</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Cabin", sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Input field styles */
+        input {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            margin: 10px;
+            text-transform: uppercase;
+            font-family: "Cabin", sans-serif;
+        }
+
+        /* Button style */
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Error message style */
+        .error {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Explanation text style */
+        #explanation {
+            font-size: 12px;
+            color: #333;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Image display style */
+        #displayedImage {
+            display: none;
+            margin-top: 20px;
+            width: 300px;
+            height: auto;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Centering the list */
+        .explanation-list {
+            display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    list-style: none; /* 去掉默认的列表样式 */
+    padding: 0;
+    font-weight: 300;
+        }
+
+        #displayedImage {
+    display: block;
+    margin: 20px auto; /* 上下 20px 间距，左右自动居中 */
+    width: 300px;
+    height: auto;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+body {
+    background-color: black;
+    color: white;
+}
+#footerText {
+    font-size: 12px;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-align: center;
+}
+
+
+    </style>
+</head>
+<body>
+
+    <h2>Enter Two Letters</h2>
+
+    <!-- Explanation Section -->
+    <p id="footerText">Different letter combinations will generate different parts of body</p>
+    <ul class="explanation-list">
+        <li><b>AA or ZZ</b></li>
+        <li><b>Adjacent letters</b></li>
+        <li><b>Both vowels</b></li>
+        <li><b>Both consonants</b></li>
+        <li><b>One vowel & one consonant</b></li>
+    </ul>
+
+    <!-- Input Fields -->
+    <div>
+        <input type="text" id="charInput1" maxlength="1">
+        <input type="text" id="charInput2" maxlength="1">
+    </div>
+
+    <!-- Error Message -->
+    <p class="error" id="errorMessage">⚠️ Please enter valid letters (A-Z) only.</p>
+
+    <!-- Explanation Output -->
+    <p id="explanation"></p>
+
+    <!-- Button to Submit -->
+    <button onclick="displayImage()" id="submitButton">Show Image</button>
+
+    <!-- Image Display -->
+    <img id="displayedImage" src="" alt="Displayed Image">
+
+    <!-- JavaScript Logic -->
+    <script>
+        function displayImage() {
+            const imgElement = document.getElementById("displayedImage");
+            const errorElement = document.getElementById("errorMessage");
+            const explanationElement = document.getElementById("explanation");
+
+            // Get user input & convert to uppercase
+            let input1 = document.getElementById("charInput1").value.toUpperCase();
+            let input2 = document.getElementById("charInput2").value.toUpperCase();
+
+            // Validate inputs: only letters A-Z allowed
+            const isValidInput = /^[A-Z]$/;
+            if (!isValidInput.test(input1) || !isValidInput.test(input2)) {
+                errorElement.style.display = "block";
+                explanationElement.style.display = "none"; // Hide explanation if error
+                imgElement.style.display = "none"; // Hide image if error
+                return;
+            } else {
+                errorElement.style.display = "none"; // Hide error if input is valid
+            }
+
+            // Convert letters to ASCII numbers
+            const num1 = input1.charCodeAt(0);
+            const num2 = input2.charCodeAt(0);
+            const diff = Math.abs(num1 - num2); // Difference between letters
+
+            // Image selection based on input conditions
+            let imageUrl = "";
+            let explanationText = "";
+
+            // Special hidden images
+            if (input1 === "Z" && input2 === "Z") {
+                imageUrl = "https://i.pinimg.com/736x/cc/d8/c4/ccd8c4d01a0c6e1f7f2504d05b59b342.jpg"; // Special Z-Z
+            } else if (input1 === "A" && input2 === "A") {
+                imageUrl = "https://i.pinimg.com/474x/f0/26/65/f026655d2149bbeeed2ea0c2c9d84254.jpg"; // Special A-A
+            } 
+            // If letters are next to each other in the alphabet
+            else if (diff === 1) {
+                imageUrl = "https://i.pinimg.com/474x/d6/cd/70/d6cd70944ccc97a9ea25cc6ef3fee48d.jpg";
+            }
+            // If both letters are vowels (A, E, I, O, U)
+            else if ("AEIOU".includes(input1) && "AEIOU".includes(input2)) {
+                imageUrl = "https://i.pinimg.com/736x/f5/99/8a/f5998a7adbe843597b409aae919ec968.jpg";
+            }
+            // If both letters are consonants
+            else if (!"AEIOU".includes(input1) && !"AEIOU".includes(input2)) {
+                imageUrl = "https://i.pinimg.com/736x/c7/10/a2/c710a25e2831c1318c1712ffceb7684f.jpg";
+            }
+            // If one is a vowel and the other is a consonant
+            else {
+                imageUrl = "https://i.pinimg.com/736x/60/aa/2d/60aa2d8527b2a740ed463370db3d624a.jpg";
+            }
+
+            // Display explanation text
+            explanationElement.textContent = explanationText;
+            explanationElement.style.display = "block";
+
+            // Display image with fade-in effect
+            imgElement.src = imageUrl;
+            imgElement.style.display = "block";
+            setTimeout(() => { imgElement.style.opacity = "1"; }, 50); // Smooth fade-in effect
+        }
+    </script>
+
+</body>
+</html>
